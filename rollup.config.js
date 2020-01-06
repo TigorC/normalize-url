@@ -1,21 +1,33 @@
 import babel from 'rollup-plugin-babel';
-import resolve from 'rollup-plugin-node-resolve';
 import filesize from 'rollup-plugin-filesize';
 import commonjs from 'rollup-plugin-commonjs';
 import progress from 'rollup-plugin-progress';
 import builtins from 'rollup-plugin-node-builtins';
 
 let pluginOptions = [
-  builtins(),
-  resolve({
-    jsnext: true,
-    browser: true
-  }),
+	builtins(),
   commonjs(),
   progress(),
-  babel({
-    exclude: 'node_modules/**',
-  }),
+	babel({
+		babelrc: false,
+		presets: [
+			[
+				"@babel/preset-env",
+				{
+					"targets": {
+						"browsers":  [
+							"last 1 version",
+							"> 1%"
+						]
+					},
+					"loose": true,
+					"modules": false,
+					"useBuiltIns": false,
+					debug: true
+				}
+			],
+		]
+	}),
   filesize({
     showGzippedSize: false,
   })
@@ -29,7 +41,7 @@ export default [{
     format: 'umd',
     sourcemap: true,
     exports: 'named',
-    amd: { id: 'normalize-url' }
+    amd: { id: 'normalize-url' },
   },
   plugins: pluginOptions,
 }];
